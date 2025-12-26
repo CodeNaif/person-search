@@ -1,0 +1,8 @@
+qdrant_client
+pydantic
+tqdm
+Pillow
+numpy
+torch
+open_clip_torch
+transformers
