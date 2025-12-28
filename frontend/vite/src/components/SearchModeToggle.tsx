@@ -1,6 +1,4 @@
 import { cn } from "@/lib/utils";
-import textButton from "../../images/text.png";
-import imageButton from "../../images/image.png";
 
 interface SearchModeToggleProps {
   mode: "text" | "image";
@@ -18,7 +16,7 @@ export const SearchModeToggle = ({ mode, onModeChange }: SearchModeToggleProps) 
             ? "scale-[1.03]"
             : "opacity-80 hover:opacity-100"
         )}
-        style={{ backgroundImage: `url(${textButton})` }}
+        style={{ backgroundImage: "url(/images/text.png)" }}
         aria-label="Text search mode"
       >
       </button>
@@ -30,7 +28,7 @@ export const SearchModeToggle = ({ mode, onModeChange }: SearchModeToggleProps) 
             ? "scale-[1.03]"
             : "opacity-80 hover:opacity-100"
         )}
-        style={{ backgroundImage: `url(${imageButton})` }}
+        style={{ backgroundImage: "url(/images/image.png)" }}
         aria-label="Image search mode"
       >
       </button>

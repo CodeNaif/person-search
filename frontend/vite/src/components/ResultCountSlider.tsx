@@ -5,23 +5,39 @@ interface ResultCountSliderProps {
   onChange: (value: number) => void;
   min?: number;
   max?: number;
+  step?: number;
 }
 
 export const ResultCountSlider = ({ 
   value, 
   onChange, 
   min = 1, 
-  max = 10000 
+  max = 10000,
+  step = 10,
 }: ResultCountSliderProps) => {
   const trackRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const buttonStep = 1;
+
+  const clampValue = useCallback(
+    (nextValue: number) => Math.min(max, Math.max(min, nextValue)),
+    [min, max],
+  );
+
+  const snapValue = useCallback(
+    (nextValue: number) => {
+      const stepped = Math.round((nextValue - min) / step) * step + min;
+      return clampValue(stepped);
+    },
+    [min, step, clampValue],
+  );
 
   const calculateValue = useCallback((clientX: number) => {
     if (!trackRef.current) return value;
     const rect = trackRef.current.getBoundingClientRect();
     const percent = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-    return Math.round(min + percent * (max - min));
-  }, [min, max, value]);
+    return snapValue(min + percent * (max - min));
+  }, [min, max, value, snapValue]);
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
     if (isDragging) {
@@ -68,9 +84,6 @@ export const ResultCountSlider = ({
   };
 
   const percent = ((value - min) / (max - min)) * 100;
-  const clampValue = (nextValue: number) =>
-    Math.min(max, Math.max(min, nextValue));
-
   return (
     <div className="w-full max-w-md p-4 pixel-input rounded-lg">
       <div className="flex items-center justify-between mb-4">
@@ -102,7 +115,7 @@ export const ResultCountSlider = ({
       </div>
       <div className="flex items-center gap-3">
         <button
-          onClick={() => onChange(Math.max(min, value - 1))}
+          onClick={() => onChange(clampValue(value - buttonStep))}
           className="w-10 h-10 pixel-btn pixel-btn-orange text-foreground font-display text-lg flex items-center justify-center"
         >
           -
@@ -125,7 +138,7 @@ export const ResultCountSlider = ({
           />
         </div>
         <button
-          onClick={() => onChange(Math.min(max, value + 1))}
+          onClick={() => onChange(clampValue(value + buttonStep))}
           className="w-10 h-10 pixel-btn pixel-btn-green text-foreground font-display text-lg flex items-center justify-center"
         >
           +

@@ -1,7 +1,6 @@
 import { useState, useCallback } from "react";
 import { Upload, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import searchButton from "../../images/search.png";
 
 interface ImageSearchInputProps {
   onImageSelect: (file: File | null) => void;
@@ -94,7 +93,7 @@ export const ImageSearchInput = ({
             onClick={onSearch}
             disabled={isLoading}
             className="pixel-image-button pixel-image-button-search shrink-0 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 rounded"
-            style={{ backgroundImage: `url(${searchButton})` }}
+            style={{ backgroundImage: "url(/images/search.png)" }}
             aria-label="Search by image"
           >
             <span className="sr-only">
