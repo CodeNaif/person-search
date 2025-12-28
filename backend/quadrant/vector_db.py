@@ -47,14 +47,18 @@ class QdrantVectorDB:
     def search(self, embedding: list[float], top_k: int, dataset_names: list[str] | None = None) -> list[ScoredPoint]:
         query_filter = None
         if dataset_names:
-            query_filter = Filter(must=[FieldCondition(key="dataset_name", match=MatchAny(any=dataset_names))])
+            query_filter = Filter(
+                must=[FieldCondition(key="dataset_name", match=MatchAny(any=dataset_names))]
+            )
 
-        results = self.client.search(
+        response = self.client.query_points(
             collection_name=self.collection_name,
-            query_vector=embedding,
+            query=embedding,
             limit=top_k,
             query_filter=query_filter,
         )
+
+        results = response.points if hasattr(response, "points") else response
         return results
 
     def get_unique_dataset_names(self) -> list[str]:
