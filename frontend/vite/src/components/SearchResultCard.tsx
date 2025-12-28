@@ -1,42 +1,64 @@
+import { useState } from "react";
+
+import type { SearchResultMetadata } from "./SearchResults";
+
 interface SearchResultCardProps {
   imageUrl: string;
   title: string;
   score: number;
   index: number;
+  metadata?: SearchResultMetadata;
 }
 
-export const SearchResultCard = ({ imageUrl, title, score, index }: SearchResultCardProps) => {
+export const SearchResultCard = ({
+  imageUrl,
+  title,
+  score,
+  index,
+  metadata,
+}: SearchResultCardProps) => {
+  const personId = metadata?.person_id;
+  const clothesId = metadata?.clothes_id;
+  const locationId = metadata?.location_id;
+  const frameId = metadata?.frame_id;
+  const [isMetadataOpen, setIsMetadataOpen] = useState(false);
+
   return (
-    <div 
-      className="group relative overflow-hidden bg-card pixel-box transition-all duration-200 hover:scale-[1.02] animate-slide-up"
+    <div
+      className="group relative overflow-hidden bg-card pixel-box transition-all duration-200 hover:scale-[1.02] animate-slide-up flex flex-col"
       style={{ animationDelay: `${index * 100}ms` }}
     >
-      <div className="aspect-square overflow-hidden">
+      <div className="h-72 w-full overflow-hidden bg-secondary/40 flex items-center justify-center">
         <img
           src={imageUrl}
           alt={title}
-          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-          style={{ imageRendering: 'auto' }}
+          className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
+          style={{ imageRendering: "auto" }}
         />
       </div>
-      <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-      <div className="absolute bottom-0 left-0 right-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-200">
-        <h3 className="font-display text-xs text-foreground truncate pixel-text-shadow">{title}</h3>
-        <div className="flex items-center gap-2 mt-2">
-          <div className="flex-1 h-2 bg-secondary pixel-box overflow-hidden">
-            <div 
-              className="h-full bg-primary transition-all duration-300"
-              style={{ width: `${score * 100}%` }}
-            />
-          </div>
-          <span className="text-sm font-display text-primary">
-            {(score * 100).toFixed(0)}%
-          </span>
-        </div>
-      </div>
-      {/* Always visible score badge */}
+
       <div className="absolute top-2 right-2 px-2 py-1 bg-background/90 text-xs font-display text-primary pixel-box">
         {(score * 100).toFixed(0)}%
+      </div>
+
+      <div className="mt-auto px-3 py-2 bg-background/90 text-xs text-white flex flex-col gap-1">
+        <button
+          type="button"
+          onClick={() => setIsMetadataOpen((open) => !open)}
+          className="flex items-center gap-2 text-left hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
+          aria-expanded={isMetadataOpen}
+        >
+          <span className="text-primary">{isMetadataOpen ? "v" : ">"}</span>
+          <span className="font-display tracking-widest">METADATA</span>
+        </button>
+        {isMetadataOpen ? (
+          <div className="mt-1 space-y-1">
+            {personId !== undefined && <div>Person: {personId}</div>}
+            {clothesId !== undefined && <div>Clothes: {clothesId}</div>}
+            {locationId !== undefined && <div>Location: {locationId}</div>}
+            {frameId !== undefined && <div>Frame: {frameId}</div>}
+          </div>
+        ) : null}
       </div>
     </div>
   );

@@ -85,7 +85,11 @@ const Index = () => {
       const mappedResults: SearchResult[] = backendResults.map((item: any) => {
         const payload = item.payload ?? {};
         const rawPath: unknown = payload.path;
-        const metadata: any = payload.metadata ?? {};
+        const metadataRaw: any = payload.metadata ?? {};
+        const metadata: SearchResult["metadata"] =
+          metadataRaw && typeof metadataRaw === "object"
+            ? metadataRaw
+            : undefined;
 
         let imageUrl = "";
         if (typeof rawPath === "string" && rawPath.length > 0) {
@@ -97,8 +101,8 @@ const Index = () => {
 
         let title = "";
         if (metadata && typeof metadata === "object") {
-          const personId = metadata.person_id;
-          const clothesId = metadata.clothes_id;
+          const personId = (metadata as any).person_id;
+          const clothesId = (metadata as any).clothes_id;
           if (personId !== undefined && clothesId !== undefined) {
             title = `Person ${personId} (clothes ${clothesId})`;
           }
@@ -118,6 +122,7 @@ const Index = () => {
           imageUrl,
           title,
           score: scoreValue,
+          metadata,
         };
       });
 
@@ -146,11 +151,11 @@ const Index = () => {
   return (
     <div className="min-h-screen relative overflow-hidden">
       {/* Full-screen background image */}
-      <div 
+      <div
         className="fixed inset-0 bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: `url('/images/gta-background.png')`,
-          imageRendering: 'pixelated',
+          imageRendering: "pixelated",
         }}
       />
       {/* Dark overlay for readability */}
@@ -164,7 +169,7 @@ const Index = () => {
           {/* Search Controls */}
           <div className="flex flex-col items-center gap-6 w-full">
             <SearchModeToggle mode={searchMode} onModeChange={setSearchMode} />
-            
+
             {searchMode === "text" ? (
               <TextSearchInput
                 value={textQuery}
@@ -185,7 +190,7 @@ const Index = () => {
               value={resultCount}
               onChange={setResultCount}
               min={1}
-              max={20}
+              max={10000}
             />
           </div>
 
@@ -203,7 +208,11 @@ const Index = () => {
                 Enter a description or upload an image to find similar faces
               </p>
               <div className="mt-6 flex flex-wrap justify-center gap-2">
-                {["bald guy with tattoos", "woman in red dress", "man with beard"].map((example) => (
+                {[
+                  "bald guy with tattoos",
+                  "woman in red dress",
+                  "man with beard",
+                ].map((example) => (
                   <button
                     key={example}
                     onClick={() => {
@@ -223,7 +232,7 @@ const Index = () => {
 
       {/* Footer */}
       <footer className="relative z-10 py-6 text-center text-muted-foreground font-display text-xs pixel-text-shadow">
-        <p>★ POWERED BY QUADRANT VECTOR SEARCH ★</p>
+        <p>*** POWERED BY QUADRANT VECTOR SEARCH ***</p>
       </footer>
     </div>
   );

@@ -1,10 +1,19 @@
 import { SearchResultCard } from "./SearchResultCard";
 
+export interface SearchResultMetadata {
+  person_id?: string | number;
+  clothes_id?: string | number;
+  location_id?: string | number;
+  frame_id?: string | number;
+  [key: string]: unknown;
+}
+
 export interface SearchResult {
   id: string;
   imageUrl: string;
   title: string;
   score: number;
+  metadata?: SearchResultMetadata;
 }
 
 interface SearchResultsProps {
@@ -34,8 +43,8 @@ export const SearchResults = ({ results, isLoading }: SearchResultsProps) => {
 
   return (
     <div className="w-full">
-      <h2 className="font-display text-sm text-foreground mb-6 flex items-center gap-3 pixel-text-shadow">
-        <span className="gta-text-gradient">★ RESULTS ★</span>
+      <h2 className="font-display text-sm text-white mb-6 flex items-center gap-3 pixel-text-shadow">
+        <span className="text-white">★ RESULTS ★</span>
         <span className="text-muted-foreground text-base">
           ({results.length} found)
         </span>
@@ -48,9 +57,11 @@ export const SearchResults = ({ results, isLoading }: SearchResultsProps) => {
             title={result.title}
             score={result.score}
             index={index}
+            metadata={result.metadata}
           />
         ))}
       </div>
     </div>
   );
 };
+

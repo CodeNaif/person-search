@@ -11,7 +11,7 @@ export const ResultCountSlider = ({
   value, 
   onChange, 
   min = 1, 
-  max = 20 
+  max = 10000 
 }: ResultCountSliderProps) => {
   const trackRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -66,6 +66,8 @@ export const ResultCountSlider = ({
   };
 
   const percent = ((value - min) / (max - min)) * 100;
+  const clampValue = (nextValue: number) =>
+    Math.min(max, Math.max(min, nextValue));
 
   return (
     <div className="w-full max-w-md p-4 pixel-input rounded-lg">
@@ -73,9 +75,28 @@ export const ResultCountSlider = ({
         <label className="font-display text-xs text-foreground pixel-text-shadow">
           RESULTS
         </label>
-        <span className="font-display text-xl text-[hsl(var(--pixel-yellow))] pixel-text-shadow">
-          {value}
-        </span>
+        <input
+          type="number"
+          inputMode="numeric"
+          min={min}
+          max={max}
+          step={1}
+          value={value}
+          onChange={(event) => {
+            const next = Number(event.target.value);
+            if (!Number.isNaN(next)) {
+              onChange(clampValue(next));
+            }
+          }}
+          onBlur={(event) => {
+            const next = Number(event.target.value);
+            if (!Number.isNaN(next)) {
+              onChange(clampValue(next));
+            }
+          }}
+          className="w-24 bg-transparent text-right font-display text-xl text-[hsl(var(--pixel-yellow))] pixel-text-shadow focus-visible:outline-none"
+          aria-label="Results count"
+        />
       </div>
       <div className="flex items-center gap-3">
         <button
