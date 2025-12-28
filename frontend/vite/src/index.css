@@ -52,6 +52,11 @@
     --pixel-gray: 220 10% 45%;
     --pixel-gray-dark: 220 10% 30%;
 
+    --pixel-btn-toggle-width: 220px;
+    --pixel-btn-toggle-height: 70px;
+    --pixel-btn-search-width: 240px;
+    --pixel-btn-search-height: 72px;
+
     /* Custom GTA theme tokens */
     --gta-glow: 166 70% 50%;
     --gta-gold: 45 100% 55%;
@@ -137,6 +142,29 @@
     border-radius: 8px;
     transition: all 0.1s ease;
     text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
+  }
+
+  .pixel-image-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .pixel-image-button-toggle {
+    width: var(--pixel-btn-toggle-width);
+    height: var(--pixel-btn-toggle-height);
+  }
+
+  .pixel-image-button-search {
+    width: var(--pixel-btn-search-width);
+    height: var(--pixel-btn-search-height);
   }
 
   .pixel-btn:active {

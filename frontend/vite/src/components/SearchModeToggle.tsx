@@ -1,5 +1,6 @@
-import { Type, Image } from "lucide-react";
 import { cn } from "@/lib/utils";
+import textButton from "../../images/text.png";
+import imageButton from "../../images/image.png";
 
 interface SearchModeToggleProps {
   mode: "text" | "image";
@@ -12,26 +13,26 @@ export const SearchModeToggle = ({ mode, onModeChange }: SearchModeToggleProps) 
       <button
         onClick={() => onModeChange("text")}
         className={cn(
-          "flex items-center gap-2 px-5 py-3 pixel-btn text-xs transition-all duration-200",
+          "pixel-image-button pixel-image-button-toggle shrink-0 transition-transform duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 rounded",
           mode === "text"
-            ? "pixel-btn-cyan text-foreground"
-            : "pixel-btn-gray text-muted-foreground"
+            ? "scale-[1.03]"
+            : "opacity-80 hover:opacity-100"
         )}
+        style={{ backgroundImage: `url(${textButton})` }}
+        aria-label="Text search mode"
       >
-        <Type className="w-4 h-4" />
-        <span>TEXT</span>
       </button>
       <button
         onClick={() => onModeChange("image")}
         className={cn(
-          "flex items-center gap-2 px-5 py-3 pixel-btn text-xs transition-all duration-200",
+          "pixel-image-button pixel-image-button-toggle shrink-0 transition-transform duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 rounded",
           mode === "image"
-            ? "pixel-btn-purple text-foreground"
-            : "pixel-btn-gray text-muted-foreground"
+            ? "scale-[1.03]"
+            : "opacity-80 hover:opacity-100"
         )}
+        style={{ backgroundImage: `url(${imageButton})` }}
+        aria-label="Image search mode"
       >
-        <Image className="w-4 h-4" />
-        <span>IMAGE</span>
       </button>
     </div>
   );
