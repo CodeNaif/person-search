@@ -25,7 +25,7 @@ export const TextSearchInput = ({ value, onChange, onSearch, isLoading }: TextSe
             onChange={(e) => onChange(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Describe a person..."
-            className="flex-1 h-14 px-3 bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none text-lg"
+            className="flex-1 h-14 px-3 bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none text-sm"
           />
         </div>
         <button

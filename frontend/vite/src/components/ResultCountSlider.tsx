@@ -51,12 +51,14 @@ export const ResultCountSlider = ({
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
+    e.preventDefault();
     setIsDragging(true);
     onChange(calculateValue(e.touches[0].clientX));
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (isDragging) {
+      e.preventDefault();
       onChange(calculateValue(e.touches[0].clientX));
     }
   };
@@ -94,7 +96,7 @@ export const ResultCountSlider = ({
               onChange(clampValue(next));
             }
           }}
-          className="w-24 bg-transparent text-right font-display text-xl text-[hsl(var(--pixel-yellow))] pixel-text-shadow focus-visible:outline-none"
+          className="w-32 bg-transparent text-right font-display text-xl text-[hsl(var(--pixel-yellow))] pixel-text-shadow focus-visible:outline-none tabular-nums"
           aria-label="Results count"
         />
       </div>
@@ -107,7 +109,7 @@ export const ResultCountSlider = ({
         </button>
         <div 
           ref={trackRef}
-          className="flex-1 h-6 pixel-slider-track relative cursor-pointer select-none"
+          className="flex-1 h-6 pixel-slider-track relative cursor-pointer select-none touch-pan-x"
           onMouseDown={handleMouseDown}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}

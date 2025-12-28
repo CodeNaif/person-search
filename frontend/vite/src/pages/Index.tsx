@@ -232,7 +232,7 @@ const Index = () => {
 
       {/* Footer */}
       <footer className="relative z-10 py-6 text-center text-muted-foreground font-display text-xs pixel-text-shadow">
-        <p>*** POWERED BY QUADRANT VECTOR SEARCH ***</p>
+        <p>*** DEVELOPED BY CodeNaif ***</p>
       </footer>
     </div>
   );

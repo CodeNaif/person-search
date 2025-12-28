@@ -75,12 +75,12 @@ export const ImageSearchInput = ({
         </div>
       ) : (
         <div className="flex flex-col gap-3">
-          <div className="relative pixel-input overflow-hidden rounded-lg">
+          <div className="relative pixel-input overflow-hidden rounded-lg h-48 flex items-center justify-center bg-secondary/40">
             <img
               src={preview}
               alt="Preview"
-              className="w-full h-48 object-cover"
-              style={{ imageRendering: 'pixelated' }}
+              className="w-full h-full object-contain"
+              style={{ imageRendering: "auto" }}
             />
             <button
               onClick={clearImage}

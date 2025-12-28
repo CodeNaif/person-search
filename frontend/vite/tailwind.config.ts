@@ -14,8 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ["Anton", "sans-serif"],
-        body: ["Inter", "sans-serif"],
+        display: ["'Press Start 2P'", "cursive"],
+        body: ["'Press Start 2P'", "cursive"],
       },
       colors: {
         border: "hsl(var(--border))",
