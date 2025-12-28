@@ -1,5 +1,8 @@
 qdrant_client
 pydantic
+fastapi
+uvicorn
+python-multipart
 tqdm
 Pillow
 numpy
