@@ -1,4 +1,4 @@
-# Person Semantic Search
+# Person Search
 
 Image/text search for people using SigLIP + Qdrant.
 
