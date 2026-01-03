@@ -1,6 +1,15 @@
 # Person Search
+A personal project for text/image similarity search on person datasets.
+It embeds images/text with SigLIP and indexes them in Qdrant for fast retrieval.
+Includes a Vite UI and a minimal Streamlit UI that call the same Fast API.
 
 Dataset used: https://wanfb.github.io/dataset.html (VC-Clothes)
+
+## Video for the system
+
+
+https://github.com/user-attachments/assets/627ebced-02e6-423f-a0be-aeb762f9274e
+
 
 ## Before Run (new dataset)
 1) Add a dataset class in `backend/dataset.py` (must return `DatasetInfo` with `samples` and `metadata`).
