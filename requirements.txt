@@ -9,3 +9,4 @@ numpy
 torch
 open_clip_torch
 transformers
+python-dotenv

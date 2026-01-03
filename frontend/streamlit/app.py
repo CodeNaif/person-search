@@ -1,12 +1,20 @@
 import os
+from pathlib import Path
 from typing import Any, Dict, List, Optional
 from urllib.parse import quote
 
 import requests
 import streamlit as st
+from dotenv import load_dotenv
 
 
-API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:8000")
+REPO_ROOT = Path(__file__).resolve().parents[2]
+load_dotenv(REPO_ROOT / ".env")
+
+API_BASE_URL = os.getenv("API_BASE_URL")
+if not API_BASE_URL:
+    st.error("API_BASE_URL is not set. Configure it in .env.")
+    st.stop()
 IMAGE_WIDTH = 256
 IMAGE_HEIGHT = 384
 

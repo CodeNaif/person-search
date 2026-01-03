@@ -10,7 +10,10 @@ from pathlib import Path
 logger = setup_logging(__name__)
 
 def get_dataset() -> DatasetInfo:
-    cat_dataset = VirtualPerson(path="D:/datasets/VC-Clothes", dataset_name="VC-Clothes")
+    cat_dataset = VirtualPerson(
+        path="D:/datasets/VC-Clothes", # this sould be updated to your dataset location.
+        dataset_name="VC-Clothes"
+    )
     return cat_dataset.get_dataset_info()
 
 def get_id_from_path(path: Path) -> str:

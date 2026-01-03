@@ -1,5 +1,6 @@
 import io
 import os
+from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Optional
 
@@ -8,45 +9,27 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from PIL import Image
+from dotenv import load_dotenv
 
-from model import CLIPEmbeddingBackend
-from quadrant.config.settings import settings
-from quadrant.vector_db import QdrantVectorDB
+from backend.model import CLIPEmbeddingBackend
+from backend.quadrant.config.settings import settings
+from backend.quadrant.vector_db import QdrantVectorDB
 
-app = FastAPI(title="Person Semantic Search API")
-
-dataset_root = Path(os.getenv("DATASET_ROOT", "D:/datasets/VC-Clothes")).resolve()
-images_dir = dataset_root / "train"
-
-if images_dir.is_dir():
-    app.mount("/images", StaticFiles(directory=str(images_dir)), name="images")
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+REPO_ROOT = Path(__file__).resolve().parents[1]
+load_dotenv(REPO_ROOT / ".env")
 
 embedding_model: CLIPEmbeddingBackend | None = None
 qdrant_vector_db: QdrantVectorDB | None = None
 
 
-class SearchTextRequest(BaseModel):
-    text: str
-    top_k: int = 5
-    dataset_names: list[str] | None = None
-
-
-def _get_env_int(name: str, default: int) -> int:
+def _get_required_env_int(name: str) -> int:
     value = os.getenv(name)
     if value is None:
-        return default
+        raise RuntimeError(f"{name} is required. Set it in .env.")
     try:
         return int(value)
-    except ValueError:
-        return default
+    except ValueError as exc:
+        raise RuntimeError(f"{name} must be an integer.") from exc
 
 
 def _parse_dataset_names(raw: Optional[str]) -> Optional[list[str]]:
@@ -83,13 +66,18 @@ def _format_results(results) -> list[dict]:
     return formatted
 
 
-@app.on_event("startup")
-def startup() -> None:
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     global embedding_model, qdrant_vector_db
-    model_name = os.getenv("MODEL_NAME", "ViT-SO400M-16-SigLIP2-384")
-    model_dataset = os.getenv("MODEL_DATASET", "webli")
-    batch_size = _get_env_int("EMBED_BATCH_SIZE", 32)
-    collection_name = os.getenv("QDRANT_COLLECTION", "person_search")
+    model_name = os.getenv("MODEL_NAME")
+    model_dataset = os.getenv("MODEL_DATASET")
+    collection_name = os.getenv("QDRANT_COLLECTION")
+    if not model_name or not model_dataset or not collection_name:
+        raise RuntimeError(
+            "MODEL_NAME, MODEL_DATASET, and QDRANT_COLLECTION are required. "
+            "Set them in .env."
+        )
+    batch_size = _get_required_env_int("EMBED_BATCH_SIZE")
 
     embedding_model = CLIPEmbeddingBackend(
         model_name=model_name,
@@ -103,6 +91,35 @@ def startup() -> None:
         host=settings.qdrant_host,
         port=settings.qdrant_port,
     )
+    yield
+    embedding_model = None
+    qdrant_vector_db = None
+
+
+app = FastAPI(title="Person Semantic Search API", lifespan=lifespan)
+
+dataset_root_value = os.getenv("DATASET_ROOT")
+if not dataset_root_value:
+    raise RuntimeError("DATASET_ROOT is required. Set it in .env.")
+dataset_root = Path(dataset_root_value).resolve()
+images_dir = dataset_root / "train"
+
+if images_dir.is_dir():
+    app.mount("/images", StaticFiles(directory=str(images_dir)), name="images")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+class SearchTextRequest(BaseModel):
+    text: str
+    top_k: int = 5
+    dataset_names: list[str] | None = None
 
 
 @app.get("/health")

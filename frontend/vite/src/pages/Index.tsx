@@ -7,8 +7,7 @@ import { ResultCountSlider } from "@/components/ResultCountSlider";
 import { SearchResults, type SearchResult } from "@/components/SearchResults";
 import { toast } from "sonner";
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const Index = () => {
   const [searchMode, setSearchMode] = useState<"text" | "image">("text");
@@ -20,6 +19,10 @@ const Index = () => {
   const [hasSearched, setHasSearched] = useState(false);
 
   const handleSearch = async () => {
+    if (!API_BASE_URL) {
+      toast.error("Missing API base URL. Set VITE_API_BASE_URL in .env.");
+      return;
+    }
     if (searchMode === "text" && !textQuery.trim()) {
       toast.error("Please enter a description before searching.");
       return;
